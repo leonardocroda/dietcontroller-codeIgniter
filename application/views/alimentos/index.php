@@ -29,6 +29,7 @@
                 </tr>
                 <?php endforeach ?>
             </table>
+            <?= anchor("alimentos/formulario","Novo Produto", array("class"=>"btn btn-primary")) ?>
             <?= anchor("login/logout","Sair", array("class"=>"btn btn-primary")) ?>
 <?php else : ?>
             <h1>Login</h1>

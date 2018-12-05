@@ -9,7 +9,17 @@ class Alimentos extends CI_Controller
 		 $this->load->model("alimentos_model");
 		 $lista = $this->alimentos_model->buscaTodos();
 		 $dados = array("alimentos" => $lista);
-		 $this->load->view('alimentos/index', $dados);
+		 $this->load->view('alimentos/index', $dados); 
 	}
-	 
+	public function formulario(){
+		$this->load->view("alimentos/formulario");
+	}
+	public function novo(){
+		$alimento= array(
+			"nome"=>$this->input->post("nome_alimento"),
+			"qtd_proteina"=>$this->input->post("qtd_proteina"),
+			"qtd_gordura"=>$this->input->post("qtd_gordura"),
+			"qtd_carboidrato"=>$this->input->post("qtd_carboidrato"),
+		);
+	}
 }
