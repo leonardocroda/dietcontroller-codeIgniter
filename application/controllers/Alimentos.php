@@ -16,10 +16,14 @@ class Alimentos extends CI_Controller
 	}
 	public function novo(){
 		$alimento= array(
-			"nome"=>$this->input->post("nome_alimento"),
-			"qtd_proteina"=>$this->input->post("qtd_proteina"),
-			"qtd_gordura"=>$this->input->post("qtd_gordura"),
-			"qtd_carboidrato"=>$this->input->post("qtd_carboidrato"),
+			"nome_alimento"=>$this->input->post("nome"),
+			"qtd_proteina"=>$this->input->post("proteina"),
+			"qtd_gordura"=>$this->input->post("gordura"),
+			"qtd_carboidrato"=>$this->input->post("carboidrato"),
 		);
+		$this->load->model("alimentos_model");
+		$this->alimentos_model->salvar($alimento);
+		$this->session->set_flashdata("success", "Alimento cadastrado com sucesso");
+		redirect('/');
 	}
 }

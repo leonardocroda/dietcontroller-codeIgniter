@@ -26,21 +26,21 @@
                 echo form_label("Quantidade de Proteína","proteina");
                 echo form_input(array(
                     "name"=> "proteina",
-                    "id"=>"qtd_proteina",
+                    "id"=>"proteina",
                     "class"=> "form-control",
                     "maxlength" => "45"
                 ));              
                 echo form_label("Quantidade de Gordura","gordura");
                 echo form_input(array(
                     "name"=> "gordura",
-                    "id"=>"qtd_gordura",
+                    "id"=>"gordura",
                     "class"=> "form-control",
                     "maxlength" => "45"
                 ));  
                 echo form_label("Quantidade de Carboidrato","carboidrato");
                 echo form_input(array(
                     "name"=> "carboidrato",
-                    "id"=>"qtd_carboidrato",
+                    "id"=>"carboidrato",
                     "class"=> "form-control",
                     "maxlength" => "45"
                 ));
