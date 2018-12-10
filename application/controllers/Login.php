@@ -17,11 +17,12 @@ class Login extends CI_Controller
 		 else{
 			$this->session->set_flashdata("danger","usuario ou senha inválidos");
 		 }
-		 redirect('/');
-	}
+		redirect('/');
+		
+		}
 	public function logout(){
 		$this->session->unset_userdata("usuario_logado");
-		$this->session->set_flashdata("success","Deslogado com sucesso");
+		// $this->session->set_flashdata("success","Deslogado com sucesso");
 		redirect('/');
 	}
 }
