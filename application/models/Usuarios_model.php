@@ -9,4 +9,7 @@ class Usuarios_model extends CI_Model{
         $usuario = $this->db->get("usuario")->row_array();
         return $usuario;
     }
+    public function adicionarMedidas($medidas){
+        $this->db->insert("medidas",$medidas);
+    }
 } 

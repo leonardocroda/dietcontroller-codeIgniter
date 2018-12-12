@@ -46,13 +46,15 @@
                 ));
                 echo form_error("carboidrato","");
 
+                echo "<br><center>";
                 echo form_button(array( 
                     "class"=>"btn btn-primary",
                     "type"=>"submit",
                     "content"=>"Cadastrar"
 
                 ));
-                echo anchor("alimentos/index", "Voltar", array('class'=> 'btn btn-primary'));
+                echo anchor("alimentos/add", "Voltar", array('class'=> 'btn btn-danger'));
                 echo form_close();
+                echo "</center>";
             ?>
           

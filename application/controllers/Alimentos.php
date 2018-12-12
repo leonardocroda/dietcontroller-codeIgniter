@@ -9,7 +9,8 @@ class Alimentos extends CI_Controller
 		if ($this->session->userdata("usuario_logado")) {
 			$this->diario();
 		} else {
-			$this->getAll();
+			$this->load->view("templates/header");
+			$this->load->view("alimentos/index");
 		}
 
 	}
@@ -18,7 +19,6 @@ class Alimentos extends CI_Controller
 		$this->load->view("templates/header");
 		$this->load->view("templates/nav-top");
 		$this->load->view("alimentos/formulario");
-		$this->load->view("templates/footer");
 		$this->load->view("templates/js");
 	}
 	public function novo()
@@ -39,7 +39,7 @@ class Alimentos extends CI_Controller
 			$this->load->model("alimentos_model");
 			$this->alimentos_model->salvar($alimento);
 			$this->session->set_flashdata("success", "Alimento cadastrado com sucesso");
-			redirect('/');
+			$this->add();
 		} else {
 			$this->load->view("templates/header");
 			$this->load->view("templates/nav-top");
@@ -57,14 +57,21 @@ class Alimentos extends CI_Controller
 		$this->load->view("templates/header");
 		$this->load->view("templates/nav-top");
 		$this->load->view("alimentos/detalhes", $dados);
-		$this->load->view("templates/footer");
 		$this->load->view("templates/js");
 	}
-	public function delete($id)
+	public function deleteDiario()
 	{
+		$id=$this->input->get("id_usuario_alimento");
 		$this->load->model("alimentos_model");
-		$this->alimentos_model->deletar_produto($id);
+		$this->alimentos_model->deletarAlimentoDiario($id);
 		redirect('/');
+	}
+	public function delete()
+	{
+		$id=$this->input->get("id_alimento");
+		$this->load->model("alimentos_model");
+		$this->alimentos_model->deletar($id);
+		$this->add();
 	}
 	public function edit($id)
 	{
@@ -74,16 +81,23 @@ class Alimentos extends CI_Controller
 	{
 		$usuario = $this->session->userdata('usuario_logado');
 		$id_usuario = $usuario['id'];
-		$data = $this->input->post("data");
+		if ($this->input->post("data") == null) {
+			$data = date("Y-m-d");
+		} else {
+			$data = $this->input->post("data");
+		}
 		$this->load->model("alimentos_model");
-		$alimento = $this->alimentos_model->diario($id_usuario, $data);
-		$dados = array("alimentos" => $alimento);
+		$alimento = $this->alimentos_model->diario($id_usuario, $data);//adiciona a ingestão do alimento ao banco
+		$dados = array("alimentos" => $alimento);//grava num array pra enviar pra view
+
 		$this->load->view('templates/header');
 		$this->load->view('templates/nav-top');
 		$this->load->view('alimentos/diario', $dados);
 		$this->load->view('templates/footer');
 		$this->load->view('templates/js');
+
 	}
+	
 	public function getAll()
 	{
 		$this->load->model("alimentos_model");
@@ -103,27 +117,33 @@ class Alimentos extends CI_Controller
 		$this->load->view('templates/header');
 		$this->load->view('templates/nav-top');
 		$this->load->view('alimentos/adicionar', $dados);
-		$this->load->view('templates/footer');
 		$this->load->view('templates/js');
 	}
 	public function adicionar()
 	{
 		$usuario = $this->session->userdata('usuario_logado');
 		$id_usuario = $usuario['id'];
-		$id_alimento=$this->input->get("id_alimento");
-		$ua=array(
-			"id_alimento"=>$id_alimento,
-			"id_usuario"=>$id_usuario,
-			"qtd_alimento"=>$this->input->post("quantidade"),
-			"data"=>date("Y-m-d")
+		$id_alimento = $this->input->get("id_alimento");
+		$quantidade = $this->input->post("quantidade");
+
+		$ua = array(
+			"id_alimento" => $id_alimento,
+			"id_usuario" => $id_usuario,
+			"qtd_alimento" => $quantidade,
+			"data" => date("Y-m-d")
 		);
 		$this->load->model("alimentos_model");
 		$alimento = $this->alimentos_model->adicionar($ua);
-		$dados = array("alimento" => $alimento);
-		$this->load->view("templates/header");
-		$this->load->view("templates/nav-top");
-		$this->load->view("usuarios/novo");
-		$this->load->view("templates/footer");
-		$this->load->view("templates/js");
+		$this->diario();
+	}
+	public function ingerido()
+	{
+	
+
+		
+	}
+	public function restante($ua)
+	{
+
 	}
 }

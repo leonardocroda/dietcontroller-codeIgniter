@@ -18,16 +18,96 @@ class Usuarios extends CI_Controller
 				"email" => $this->input->post("email"),//insere o valor do input de id email na coluna email da tabela usuarios do banco de dados
 				"senha" => md5($this->input->post("senha"))//insere o valor do input de id senha na coluna senha da tabela usuarios do banco de dados
 			);
-
+			
 			$this->load->model("usuarios_model"); //carrega o model usuarios_model
 			$this->usuarios_model->salvar($usuario); //chama a funçao salvar do model usuarios_model enviando como parametro o array com as inormações do usuário fornecidas acima
-			$this->load->view('usuarios/novo');//carrega a view novo, que é só um html simples com uma mensagem de sucesso
+			$this->logarRecente($usuario['email'],$usuario['senha']);
+			$this->load->view('templates/header');
+			$this->load->view('usuarios/medidas');
+			
 		} else {
 			$this->load->view('templates/header');//caso os campos não tenham sido validados recarrega a pagina index
 			$this->load->view('templates/nav-top');
 			$this->load->view('alimentos/index');
 			$this->load->view('templates/footer');
 			$this->load->view('templates/js');
+		}
 	}
-}
+	public function logarRecente($email,$senha){
+		$this->load->model("usuarios_model");
+		$usuario = $this->usuarios_model->logarUsuarios($email, $senha);
+		if($usuario){
+		   $this->session->set_userdata("usuario_logado",$usuario);
+		   $this->session->set_flashdata("success","logado com sucesso");
+		}
+	}
+	public function medidas(){
+		$usuario = $this->session->userdata('usuario_logado');
+		$id = $usuario['id'];
+		$peso=$this->input->post("peso");
+		$altura=$this->input->post("altura");
+		$idade=$this->input->post("idade");
+		$sexo='m';
+		$tmb=$this->calculaTMB($peso,$altura,$sexo,$idade);
+		$indice=1.2;
+		$gcd=$this->calculaGCD($tmb,$indice);
+		$prot=$peso*2;
+		$gord=$peso;
+		$carb= ($gcd-($prot*4+$gord*9))/4;
+		$medidas=array(
+			"id_usuario"=>$id,
+			"peso"=>$peso,
+			"altura"=>$altura,
+			"sexo"=>$sexo,
+			"idade"=>$idade,
+			"gcd"=>$gcd,
+			"tmb"=>$tmb,
+			"meta_carboidrato"=>$carb,
+			"meta_proteina"=>$prot,
+			"meta_gordura"=>$gord,
+			"data"=>date("Y-m-d")
+		);
+		$this->load->model("usuarios_model");
+		$this->usuarios_model->adicionarMedidas($medidas);
+		redirect('/');
+	}
+	
+
+	public function calculaTMB($peso,$altura,$sexo,$idade){
+		switch ($sexo) {
+			case 'm': {
+			  $tmb = (10 * $peso) + (6.25 * $altura) - (5 * $idade) + 5;
+			  break;
+			}
+			case 'f':{
+			  $tmb = (10 * $peso) + (6.25 * $altura) - (5 * $idade) - 161;
+			  break;
+			}
+			default:{
+			  //statements;
+			  break;
+			}
+		}	
+		return $tmb;
+	}
+	public function calculaGCD($tmb, $indice){
+		$gcd=$tmb*$indice;
+		return $gcd;
+	}
+	public function calculaMacros($gcd, $peso){
+		
+		$prot=$peso*2;
+		$gord=$peso;
+		$carb= ($gcd-($prot*4+$gord*9))/4;
+		return $macros=array(
+			"meta_carboidrato"=>$carb,
+			"meta_proteina"=>$prot,
+			"meta_gordura"=>$gord
+		);
+	}
+	public function adicionarMedida(){
+		$this->load->view('templates/header');
+		$this->load->view('usuarios/medidas');
+	}
+
 }
